@@ -1,0 +1,25 @@
+#include <IRremote.h>
+
+int relayPin = 3;
+int relayState = LOW;
+long lastDebounceTime = 0;
+long debounceDelay = 50; // eliminate debounce time
+int RECV_PIN = 11;
+
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+void setup(){
+Serial.begin(9600);
+irrecv.enableIRIn();
+pinMode(relayPin, OUTPUT);
+digitalWrite(relayPin, relayState);
+}
+void loop() {
+if (irrecv.decode(&results)) {
+Serial.println(results.value, HEX);
+if(results.value == 0xFD00FF){
+relayState = !relayState;
+}
+}
+irrecv.resume();
+}
